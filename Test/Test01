@@ -1,2 +1,14 @@
 Testing Git from RStudio
-Test numba 2
+
+
+n = length(unique(df$Year))
+col=colorspace::diverge_hcl(n)
+col
+
+df %>% filter(Year %in% c(2015:2017)) %>%
+  ggplot(aes(x=income,color=as.factor(Year),fill=as.factor(Year))) +
+  geom_histogram(position="dodge", alpha=0.5,bins=10)+
+  scale_color_manual(values=col)+
+  scale_fill_manual(values=col)+
+  labs(title="Income Histogram Plots", x="Income($)",y="Count")+
+  theme_classic()
