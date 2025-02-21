@@ -1,0 +1,44 @@
+---
+title: "ScatterPlots"
+author: "MW"
+date: "2025-02-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#Libraries
+library(tidyverse)
+library(hrbrthemes)
+library(viridis)
+library(readxl)
+
+#Load Data
+res = read_excel("C:/Users/maver/OneDrive/Documents/School/DS605/DSCI605_Labs/Module7/Sampledata2.xlsx")
+```
+
+## Introducing the Dataset
+```{r first10, echo=TRUE}
+knitr::kable(head(res, 10),caption = "\\label{tab:table1}The first 10 rows of CrimeRate data.")
+```
+
+## Crime Rates Grouped by Year
+
+Below are the minimum, maximum, and average (mean) Crime Rates by year.
+
+```{r crimerates, echo=TRUE}
+resDF = res %>% group_by(Year)  %>%
+                    summarise(minCR = min(CrimeRate), 
+                              maxCR = max(CrimeRate), 
+                              meanCR = mean(CrimeRate))
+head(resDF,10)
+
+
+```
+
+
+```{r histogram, echo=TRUE}
+#Histogram 1
+ggplot(res,aes(x=CrimeRate)) +
+  geom_histogram(aes(color=as.factor(Year), fill=as.factor(Year)),position="dodge",alpha=0.5,bins=10)
+```
