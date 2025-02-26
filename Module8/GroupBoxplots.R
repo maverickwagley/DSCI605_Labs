@@ -10,7 +10,7 @@ names(mpg)
 
 ## Box plot
 # Basic box plot
-p <- ggplot(mpg, aes(x=class, y=displ)) + geom_boxplot( )+ coord_flip()
+p <- ggplot(mpg, aes(x=class, y=displ)) + geom_boxplot( ) + coord_flip()
 p
 
 
