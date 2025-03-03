@@ -1,0 +1,27 @@
+---
+title: "Multigroup Boxplots"
+author: "MW"
+date: "2025-02-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require(tidyverse)) {install.packages('tidyverse')}; require(tidyverse)
+if (!require(readxl)) {install.packages('readxl')}; require(readxl)
+land = read_xlsx('Crop_Range_GOES0901_CountJday.xlsx')
+```
+
+## Create Grouped Boxplot
+
+```{r Plot}
+land %>% filter(jday%in%seq(235, 243)) %>%
+  ggplot(aes(x=as.factor(jday),y=FDCount,fill=as.factor(jday)))+
+  geom_boxplot(outlier.colour="red", outlier.shape=8,outlier.size=2)+
+  xlab("Julian Day")+
+  ##Change the title of legend
+  labs(fill="Julian Day") +
+  ggtitle("Boxplot")
+```
+
+mwagley

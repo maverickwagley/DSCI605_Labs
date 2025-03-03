@@ -1,0 +1,48 @@
+---
+title: "Multiple-view Plots"
+author: "Maverick Wagley"
+date: "2025-02-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require(tidyverse)) {install.packages('tidyverse')}; require(tidyverse)
+if (!require(readxl)) {install.packages('readxl')}; require(readxl)
+if (!require(gridExtra)) {intall.package('gridExtra')}; require(gridExtra)
+sample2 = read_xlsx('Sampledata2.xlsx')
+```
+
+## A Grouped Histogram
+Plot a histogram of Year
+```{r histo, echo=TRUE}
+p <- ggplot(sample2, aes(x=CrimeRate)) + 
+  geom_histogram(aes(color=as.factor(Year), fill=as.factor(Year)),position="dodge",binwidth=100)
+p
+```
+
+## A Scatter Plot
+Plot a scatter plot of the Year
+```{r scatter, echo=TRUE}
+q <- ggplot(sample2,aes(x=Year,y=CrimeRate,fill="Black")) + 
+  geom_point()
+q
+```
+
+## A Grouped Boxplot
+Plot a grouped plot of the Year
+```{r box, echo=TRUE}
+t <- ggplot(sample2, aes(x=CrimeRate,y=Year,fill=as.factor(Year))) +
+  geom_boxplot(outlier.colour="red", outlier.shape=8,
+               outlier.size=2)
+t
+```
+
+## All Plots Together
+Plot all plots together using grid arrange
+```{r all, echo=TRUE}
+g1 <- ggplotGrob(p)
+g2 <- ggplotGrob(q)
+g3 <- ggplotGrob(t)
+grid.arrange(g1,g2,g3)
+```

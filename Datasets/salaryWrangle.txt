@@ -1,0 +1,27 @@
+# Add your code here for this assignment. 
+install.packages("tidyverse")
+library(tidyr)
+library(dplyr)
+getwd()
+setwd("/home/rstudio/Module2")
+salaryCSV = read.csv("Salaries.csv") #read_csv isn't working but read.csv is...
+
+#Trim Table with Select and Filter
+select(salaryCSV, rank, discipline, sex, salary)
+filter(salaryCSV, salary != "")
+
+#Create Groups in Table and a new Count row
+salaryG = salaryCSV %>%
+  group_by(rank, discipline, sex) %>%
+  count()
+salaryG
+
+#Show Salary Spread between Sex
+salarySpread = salaryG %>%
+  spread(sex, n)
+salarySpread
+
+#Gather spread back into organized table
+salaryGather = salarySpread %>%
+  gather(sex, n, Female:Male)
+salaryGather
