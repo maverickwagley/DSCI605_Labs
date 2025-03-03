@@ -1,13 +1,11 @@
 install.packages("plotly")
-
+library(tidyverse)
 library(plotly)
-p = plot_ly(x=rnorm(1000),y=rnorm(1000),mode='markers')
-p
+library(readr)
 
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color= ~Species,
-         type = "scatter",mode="markers")
+setwd("C:/Users/maver/OneDrive/Documents/School/DS605/DSCI605_Labs/Datasets")
+tcg = read.csv("TCGDataset.csv")
 
-plot_ly(iris, x = ~Petal.Width, color=~Species, type="box")
-
-land = readxl::read_xlsx('Crop_Range_GOES0901_CountJday.xlsx')
-View(land)
+fig = plot_ly(x = tcg$Set.Name, y = tcg$Fairy, type ='bar') %>%
+  layout(title="Fairy Per Set",plot_bgcolor='#e5ecf6')
+fig
