@@ -9,6 +9,9 @@ This is a RMD document for practicing Plotly
 library(tidyverse)
 library(plotly)
 library(readxl)
+
+setwd("C:/Users/maver/OneDrive/Documents/School/DS605/DSCI605_Labs/Datasets")
+tcg = read.csv("TCGDataset.csv")
 ```
 
 ```{setup include=false}
