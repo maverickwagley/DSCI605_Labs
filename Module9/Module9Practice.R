@@ -3,6 +3,7 @@ library(tidyverse)
 library(plotly)
 library(readr)
 data(txhousing)
+View(txhousing)
 
 ui = fluidPage(
   selectInput(
