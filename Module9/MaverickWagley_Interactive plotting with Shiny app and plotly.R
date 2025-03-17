@@ -54,8 +54,14 @@ server = function(input, output, ...){
   
   #Output Plotly Object B: Histogram
   output$outyears = renderPlotly({
-    plot_ly(mainData, x = ~State, y = ~CrimeRate)%>%
-      add_histogram(marker = list(color = "teal", line = list(color = "darkgray", width = 2)), name = "Year23")
+    plot_ly(mainData, x = ~CrimeRate, nbinsx = 15)%>%
+      filter(Year %in% input$inputyears) %>%
+      add_histogram(marker = list(color = "teal", line = list(color = "darkgray", width = 1)), 
+                    name = "Year", binwidth = 1) %>%
+      layout(title="Crime Rate Per Year (All States)",
+             xaxis=list(title="Crime Rate per 100k people"),
+             yaxis=list(title="Count"),
+             showlegend = TRUE) 
   })
 }
 

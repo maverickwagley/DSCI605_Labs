@@ -1,0 +1,64 @@
+---
+title: "Integrate time series data at hourly scale to monthly scale"
+output: bookdown::html_document2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+# Load the library
+
+```{r libraries}
+# Load the libraries
+library(tidyverse)
+library(zoo)
+library(knitr)
+```
+
+# Read the data provided
+```{r readdata}
+#Set the working directory
+setwd("~/School/DS605/DSCI605_Labs/Module10")
+
+######Read the Three-year crime data from 2017-09-01 to 2020-08-31 into R
+crimeData = readRDS("Crime3years.rds")
+
+```
+
+## Select two-year data
+
+```{r select data}
+#Select 2 Years
+crime2Y = head(crimeData, 365*24*2)
+```
+
+
+# Integrate the two-year hourly data into monthly data
+
+```{r integration}
+#Convert Data into Time Values
+conv2Y = crime2Y %>%
+  mutate(hour = hour(crime2Y$Date),week=weekdays(crime2Y$Date), month = month(crime2Y$Date), year=year(crime2Y$Date)) %>%
+  mutate(weeknum=strftime(Date,format='%V'))
+#Summarize by month
+month2Y = conv2Y %>%
+  group_by(month,year) %>%
+  summarize(case_monthly=sum(Battery))
+```
+
+# kable() for a table
+
+```{r kable}
+#Read as kable
+kable(month2Y,caption="Battery Crime at a month scale from 2018-01-01 to 2019-12-31")
+
+```
+
+# Save the data in the required format
+
+```{r save data}
+# Save Monthly Data to an RDS
+saveRDS(month2Y, file = "Crime2years_montly.rds")
+
+```
