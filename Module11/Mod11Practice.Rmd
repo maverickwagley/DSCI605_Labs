@@ -1,0 +1,25 @@
+---
+title: "Mod11Practice"
+author: "MW"
+date: "2025-03-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Practice Module 11
+
+```{r cars}
+###ts() object
+sstoi_pa = read.table("sstoi_pa.txt", header=T)
+mo_sstoi = length(sstoi_pa$YR) - 11
+yr_sstoi = mo_sstoi/12
+sstoi_pa34 = ts(sstoi_pa[,3], start = c(1950,1), end = c(1996,12), frequency = 12)
+class(sstoi_pa34)
+```
+```{r plots}
+ts.plot(sstoi_pa34)
+plot(sstoi_pa34)
+```
