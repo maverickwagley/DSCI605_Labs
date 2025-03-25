@@ -45,3 +45,4 @@ bat_train_weekly%>%
   scale_x_discrete(breaks = seq(min(bat_train_weekly$yearweek),
                                 max(bat_train_weekly$yearweek),
                                 10))
+

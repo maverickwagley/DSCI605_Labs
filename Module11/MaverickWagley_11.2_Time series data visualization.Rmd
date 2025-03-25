@@ -1,0 +1,83 @@
+---
+title: "TimeSeries"
+author: "MW"
+date: "2025-03-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+#Libaries and Packages
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+######Three-year crime data from 2017-09-01 to 2020-08-31
+crimes = readRDS("Crime3years.rds")
+crimes$Date = as.Date(crimes$Date)
+crimes1 = crimes %>% 
+  mutate(weeknum=strftime(Date, format='%V'),
+         month=month(crimes$Date), 
+         year=year(crimes$Date)) 
+crimes2years = crimes1 %>% filter(year %in% c(2018, 2019))
+```
+
+## Plot at an hourly scale
+
+```{r Hourly}
+ggplot(crimes2years, aes(x=Date, y=Battery)) +
+  geom_point(col='darkred') + geom_line(col='red') +
+  labs(title="Battery Crime from 2018-01-01 to 2019-12-31 in Chicago",
+       x="Hourly", y="Number of Crimes") + 
+  scale_x_date(date_labels = "%m/%d/%y-%H:%M:%S")
+
+```
+
+## Plot at an weekly scale
+
+```{r Weekly}
+crimes_weekly <- crimes2years %>%
+  group_by(year, weeknum) %>%
+  summarize(
+    year_month = min(Date),
+    case_weekly = sum(Battery)
+  )
+
+ggplot(crimes_weekly, aes(x=year_month, y=case_weekly)) +
+  geom_point(col='darkred') + geom_line(col='red') +
+  labs(title="Battery Crime from 2018-01-01 to 2019-12-31 in Chicago",
+       x="Year-Week", y="Number of Crimes") + 
+  scale_x_date(date_labels = "%Y/%V")
+
+```
+
+## Plot at a monthly scale
+
+```{r Monthly}
+# group the data into monthly data
+crimes_monthly <- crimes2years %>%
+  group_by(year, month) %>%
+  summarize(
+    year_month = min(Date),
+    case_monthly = sum(Battery)
+  )
+# plot at monthly
+ggplot(crimes_monthly, aes(x=year_month, y=case_monthly)) +
+  geom_point(col='darkred') + geom_line(col='red') +
+  labs(title="Battery Crime from 2018-01-01 to 2019-12-31 in Chicago",
+       x="Year-Month", y="Number of Crimes") + 
+  scale_x_date(date_labels = "%Y-%b")
+```
+
+## Stacked Time Series
+
+```{r Stacked}
+# add new column for month
+
+crimes_monthly = crimes_monthly %>%
+  mutate(month_date_date = as.Date(paste0("2025-", format(year_month, "%m-%d")), format="%Y-%m-%d"))
+
+# plot at monthly
+ggplot(crimes_monthly, aes(x=month_date_date, y=case_monthly, , col=as.factor(year))) +
+  geom_point() + geom_line() +
+  labs(title="Battery Crime in Chicago",
+       x="Month", y="Number of Crimes", col = "Year") + 
+  scale_x_date(date_labels = "%b")
+```
