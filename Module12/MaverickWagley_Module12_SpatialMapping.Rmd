@@ -1,0 +1,92 @@
+---
+title: "MaverickWagley_Module12_SpatialMapping"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+###Libraries
+library(tidyverse)s
+library(raster)
+library(sf)
+library(ggspatial)
+library(ggnewscale)
+library(ggsn)
+library(viridis)
+
+#Needs correct data/wd
+
+###all states in USA
+state<-st_read("data/tl_2019_us_state/tl_2019_us_state.shp")
+
+###Select Indiana (IN)
+IN = state[state$STUSPS== "IN",]
+
+# st_write(IN, "Indiana.shp",append=FALSE)
+##Watershed in Indiana
+watershed<-st_read("data/Watersheds_HUC08_2009/WATERSHEDS_HUC08_2009_USDA_IN.shp")
+
+##Polygons of cities in Indiana
+place<-st_read("data/tl_2016_18_place/tl_2016_18_place.shp")
+
+##Select cities of interest
+Somecities <- place%>% filter(NAME=="Muncie"|NAME=="Carmel")
+```
+
+
+## A basic spatial map like this one
+
+```{r map1}
+########################Map the spatial datasets
+ggplot() +
+  geom_sf(data=IN)+
+  geom_sf(data=watershed, alpha = 0) +
+  geom_sf(data=place, alpha = 0) +
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("Indiana map", subtitle = paste0("(",length(unique(place$NAME)), " places)"))
+```
+
+
+
+## A professional spatial map like this one
+
+```{r map2}
+ggplot(data=IN) + ## WHY NEED DATA HERE BECAUSE GEOM_TEXT INHERITS THE GLOBAL MAPPING 
+  
+  #Watershed
+  geom_sf(data=watershed,aes(fill=REGION))+
+  scale_fill_manual(values = col)+
+  guides(fill=guide_legend(title="Watershed Regions"))+
+  #watershed+IN:legend
+  new_scale_fill()+
+  geom_sf(data=IN,linewidth=1,alpha = 0,aes(color="A"),show.legend = "polygon") + 
+  geom_sf(data=watershed, alpha = 0,aes(color="B"),show.legend = "polygon") +
+  scale_color_manual(values = c("A" = "red", "B" = "black"),
+                     labels = c("Indiana", "Watershed"),
+                     name = "") +
+  #Cities
+  new_scale_color() +
+  geom_sf(data=Somecities, aes(fill = as.factor(NAME))) +
+  scale_fill_manual(values = c("red", "green"))+
+  theme(legend.position="right",    #change "top" to specific position by c(2.5,0.8)
+        plot.title = element_text(hjust = 0.5,
+                                  color = "Gray40",
+                                  size = 16,
+                                  face = "bold"),
+        plot.subtitle = element_text(color = "blue"),
+        plot.caption = element_text(color = "Gray60"))  +
+  guides(fill=guide_legend(title="Cities"))+
+
+  #Other map items:scale bar and north arrow
+  scalebar(data = IN, location = "bottomleft", anchor = c(x = -88.5, y = 37),dist = 150,
+           dist_unit = "km", transform = TRUE,  model = "WGS84",st.dist=0.04)+    #0.002, upper,and 0.05 lower
+  annotation_north_arrow(location = "br", which_north = "true", 
+                         # pad_x = unit(2.5, "in"), pad_y = unit(0.2, "in"),
+                         style = north_arrow_fancy_orienteering) +
+  coord_sf(xlim = c(-89, -83), ylim = c(37, 43))+
+  #Set font size for all texts
+  theme(text = element_text(size = 20)) +
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("Map of Indiana Watershed and Major Cities", 
+          subtitle = paste0("(", length(unique(Somecities$NAME)), 
+                            " cities selected)"))
+```
