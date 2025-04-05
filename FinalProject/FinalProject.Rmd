@@ -1,0 +1,143 @@
+---
+title: "Final Project Report"
+author: "Maverick Wagley"
+date: "2025-03-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+##### Load Libraries
+library(tidyverse)
+library(raster)          #raster()
+library(sf)              #st_read()
+library(ggspatial)       #annotation_scale,annotation_north_arrow
+library(ggnewscale)      #new_scale_color() 
+library(ggsn)            #scalebar()
+library(shiny)           #Shiny app
+library(plotly)          #plot_ly()
+library(gridExtra)       #grid.arrange()
+
+##### Setup Data
+setwd("~/School/DS605/DSCI605_Labs/FinalProject/final_data")
+Unemployrate = read_csv("data/unemployment_county.csv")
+Crimerate = read_csv("data/crime_and_incarceration_by_state.csv")
+States = st_read("data/tl_2019_us_state/tl_2019_us_state.shp")
+```
+
+# Your title:
+
+[The topic should be mentioned. For example, Time series analysis of prescribed fires over the USA]
+
+## 1 Data
+
+[Please give a detailed description of the data you propose, including where you get the data, the time, and the spatial area if applicable.]
+
+## 2 Project Objectives
+
+[What problems are you going to solve?
+What method(s) you are going to use and why this method(s) could be used to solve the problems?
+
+## 3 Data Processing and data visualization
+
+### Data preprocessing: 
+
+```{r preproc}
+
+
+#
+#
+##### Process Polygons
+#Filter Regions Outside Contiguous USA
+Contiguous_state = States %>% filter(STUSPS!="AK"& 
+                                       STUSPS!="AS"& 
+                                       STUSPS!="MP"& 
+                                       STUSPS!="PR"& 
+                                       STUSPS!="VI"& 
+                                       STUSPS!="HI"& 
+                                       STUSPS!="GU")
+#Check Length
+length(unique(Contiguous_state$STUSPS))
+
+
+#
+#
+##### Process Unemployment
+
+# Check the length of State Column
+unique(Unemployrate $State)
+length(unique(Unemployrate $State))
+
+#Process Unemployment 1 
+Unemployrate = Unemployrate %>% 
+  #Filter Non-Contiguous
+  filter(State!="AK"& State!="HI") %>%
+  #Group States and Years
+  group_by(State,Year) %>% 
+  #Summarize Data with new variables
+  summarise(Totalforce=sum(`Labor Force`),
+            Totalemployed=sum(Employed),
+            Totalunemployed=sum(Unemployed),
+            Meanrate=mean(`Unemployment Rate`,rm.na=TRUE)
+            )
+
+#Check the length of State again  
+length(unique(Unemployrate $State))
+
+#Process Unemployment 2
+Unemployrate = Unemployrate %>% 
+  #Match the column name of the crime data set
+  rename("STUSPS"="State") %>% 
+  #Get selection of years
+  filter(Year %in% c(2007:2014))
+
+
+#
+#
+##### Process Crime Data
+
+#Check the length of states (jurisdiction)
+unique(Crimerate$jurisdiction)
+length(unique(Crimerate$jurisdiction))
+head(Crimerate)
+
+#Change the column name 
+Crimerate <-  Crimerate %>% 
+  rename("STUSPS"="jurisdiction") %>% 
+  rename("Year"="year") %>% 
+  filter(STUSPS!="FEDERAL"& STUSPS!="ALASKA"& STUSPS!="HAWAII") %>% 
+  filter(Year %in% c(2007:2014))
+
+#Check the data again 
+length(unique(Crimerate$STUSPS))
+head(Crimerate)
+
+#Changes the state names in the state column "STUSPS"
+Crimerate$STUSPS = state.abb[match(str_to_title(Crimerate$STUSPS),state.name)]
+#Calculate the crimerate
+Crimerate <- Crimerate %>% 
+  mutate(Crimerate=(violent_crime_total/state_population)*100) %>% 
+  dplyr::mutate_if(is.numeric, round, 1)
+```
+
+### EDA analysis
+
+```{r}
+# You can use the table for the basic data statistics. Please explain the EDA results. 
+```
+
+### Data analytics method
+
+```{r}
+# For example, the time series data visualization. Please explain the method in detailed information, and interpret the results.
+```
+
+
+## 4 Discussion and conclusion
+
+[What information you can get from the graphs? What you can do more in the future.]
+
+## 5 References
+
+[List all references articles you refer for the final project]

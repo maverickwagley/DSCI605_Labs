@@ -1,0 +1,76 @@
+---
+title: "Final Project Report"
+author: "AL"
+date: "2023-05-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Requirements:
+This assignment is to wrap all the files required for the final project.
+
+- Write your final report in a R Markdown file. The report should follow the required structures below. 
+  ** Submit a final report including all the graphs/tables required. Please label all the graphs/tables and provide captions for them. You have to write your report in 2-3 pages without considering your graphs/tables. Please use 12 font sizes and single-line spacing for all texts in the report.
+  ** Organize your final project following the structure of the file shared here. 
+
+- Make a presentation with 5 slides in PPT. 
+  
+- Record your presentation.
+
+
+
+You are required to:
+
+
+
+Please write your report in the R Markdown file. It means you need to Put all your code together (including cleaning the datasets in Module 14 and visualizing the graphs in Module 15) and submit a .RMD file and A knitted file from the RMD file. Please comment on each step in your code file.
+Discuss and summarize the findings of data visualization in the part "Discussion and conclusion" of the final report.
+Make a presentation with five slides in PowerPoint and submit the presentation.  In the slides, please use less text and the high-quality graphs you created. The font size should be larger than 20 pts.
+Record your presentation in PowerPoint and export it into a video. Only voice is needed. Submit the video.
+
+
+
+# Your title:
+
+[The topic should be mentioned. For example, Time series analysis of prescribed fires over the USA]
+
+## 1 Data
+
+[Please give a detailed description of the data you propose, including where you get the data, the time, and the spatial area if applicable.]
+
+## 2 Project Objectives
+
+[What problems are you going to solve?
+What method(s) you are going to use and why this method(s) could be used to solve the problems?
+
+## 3 Data Processing and data visualization
+### Data preprocessing: 
+
+```{r}
+# Please include the basic data wrangling in Module 14
+```
+
+### EDA analysis
+
+```{r}
+# You can use the table for the basic data statistics. Please explain the EDA results. 
+```
+
+### Data analytics method
+
+```{r}
+# For example, the time series data visualization. Please explain the method in detailed information, and interpret the results.
+```
+
+
+## 4 Discussion and conclusion
+
+[What information you can get from the graphs? What you can do more in the future.]
+
+## 5 References
+
+[List all references articles you refer for the final project]
+

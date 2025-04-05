@@ -7,3 +7,33 @@ Spatial Elements
 6. Meta Data (text)
 7. Outline of entire area
 8. Spatial Locator (like global)
+
+
+
+You received 9 points out of a total possible score of 20.
+
+You passed the following test cases:
+
+Test 1: A .html file is submitted
+
+Test 5: The names of two cities are selected
+
+Test 8: One map includes a north arrow
+
+Test 9: One map includes at least 3 legends
+
+Test 10: One map includes a scale bar
+
+Test 11: Comments are present for all major steps
+
+Please try again for the following test cases:
+
+Test 2: The states data is imported correctly
+
+Test 3: Watershed data in Indiana is imported correctly
+
+Test 4: The state Indiana is selected appropriately
+
+Test 6: Your HTML file includes a map with datasets 'IN', 'watersheds' and 'places
+
+Test 7: Your HTML file includes a map with datasets 'IN', 'watersheds' and two cities

@@ -5,7 +5,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 ###Libraries
-library(tidyverse)s
+library(tidyverse)
 library(raster)
 library(sf)
 library(ggspatial)
@@ -13,61 +13,69 @@ library(ggnewscale)
 library(ggsn)
 library(viridis)
 
-#Needs correct data/wd
+#US States Shapes
+states = st_read("tl_2019_us_state/tl_2019_us_state.shp")
 
-###all states in USA
-state<-st_read("data/tl_2019_us_state/tl_2019_us_state.shp")
+#Select Indiana (IN)
+IN = states[states$STUSPS== "IN",]
 
-###Select Indiana (IN)
-IN = state[state$STUSPS== "IN",]
+#Indiana Watershed Shapes
+watersheds = st_read("Watersheds_HUC08_2009/WATERSHEDS_HUC08_2009_USDA_IN.shp")
 
-# st_write(IN, "Indiana.shp",append=FALSE)
-##Watershed in Indiana
-watershed<-st_read("data/Watersheds_HUC08_2009/WATERSHEDS_HUC08_2009_USDA_IN.shp")
+#Indiana City Shapes
+places = st_read("tl_2016_18_place/tl_2016_18_place.shp")
 
-##Polygons of cities in Indiana
-place<-st_read("data/tl_2016_18_place/tl_2016_18_place.shp")
-
-##Select cities of interest
-Somecities <- place%>% filter(NAME=="Muncie"|NAME=="Carmel")
+#Select Indiana Cities
+Somecities= places%>% filter(NAME=="Muncie"|NAME=="Carmel")
 ```
 
 
-## A basic spatial map like this one
-
+## Basic Map
 ```{r map1}
-########################Map the spatial datasets
+########################Basic Map
+#Basic ggplot map
 ggplot() +
+  #Indiana Shape
   geom_sf(data=IN)+
-  geom_sf(data=watershed, alpha = 0) +
-  geom_sf(data=place, alpha = 0) +
+  #Watershed SHape
+  geom_sf(data=watersheds, alpha = 0) +
+  #Place Shape
+  geom_sf(data=places, alpha = 0) +
+  #Labels
   xlab("Longitude") + ylab("Latitude") +
-  ggtitle("Indiana map", subtitle = paste0("(",length(unique(place$NAME)), " places)"))
+  #Title
+  ggtitle("Indiana map", subtitle = paste0("(",length(unique(places$NAME)), " places)"))
 ```
 
 
-
-## A professional spatial map like this one
-
+## Professional Map
 ```{r map2}
-ggplot(data=IN) + ## WHY NEED DATA HERE BECAUSE GEOM_TEXT INHERITS THE GLOBAL MAPPING 
+########################Professional Map
+#ggplot professional map
+ggplot(data=IN) + 
   
-  #Watershed
-  geom_sf(data=watershed,aes(fill=REGION))+
-  scale_fill_manual(values = col)+
+  #Plot Watershed Shape
+  geom_sf(data=watersheds,aes(fill=REGION))+
+  #Fill Shape
+  scale_fill_manual(values = c("blue", "purple","yellow"))+
+  #Legend
   guides(fill=guide_legend(title="Watershed Regions"))+
   #watershed+IN:legend
   new_scale_fill()+
   geom_sf(data=IN,linewidth=1,alpha = 0,aes(color="A"),show.legend = "polygon") + 
-  geom_sf(data=watershed, alpha = 0,aes(color="B"),show.legend = "polygon") +
+  geom_sf(data=watersheds, alpha = 0,aes(color="B"),show.legend = "polygon") +
   scale_color_manual(values = c("A" = "red", "B" = "black"),
                      labels = c("Indiana", "Watershed"),
                      name = "") +
+  
   #Cities
   new_scale_color() +
+  #Plot Cities Shapes
   geom_sf(data=Somecities, aes(fill = as.factor(NAME))) +
+  #Fill Cities SShape Color
   scale_fill_manual(values = c("red", "green"))+
-  theme(legend.position="right",    #change "top" to specific position by c(2.5,0.8)
+  #Cities Legend
+  theme(legend.position="right",    
         plot.title = element_text(hjust = 0.5,
                                   color = "Gray40",
                                   size = 16,
@@ -75,17 +83,19 @@ ggplot(data=IN) + ## WHY NEED DATA HERE BECAUSE GEOM_TEXT INHERITS THE GLOBAL MA
         plot.subtitle = element_text(color = "blue"),
         plot.caption = element_text(color = "Gray60"))  +
   guides(fill=guide_legend(title="Cities"))+
-
-  #Other map items:scale bar and north arrow
+  
+  #Map Items
   scalebar(data = IN, location = "bottomleft", anchor = c(x = -88.5, y = 37),dist = 150,
-           dist_unit = "km", transform = TRUE,  model = "WGS84",st.dist=0.04)+    #0.002, upper,and 0.05 lower
+           dist_unit = "km", transform = TRUE,  model = "WGS84",st.dist=0.04)+    
   annotation_north_arrow(location = "br", which_north = "true", 
-                         # pad_x = unit(2.5, "in"), pad_y = unit(0.2, "in"),
                          style = north_arrow_fancy_orienteering) +
   coord_sf(xlim = c(-89, -83), ylim = c(37, 43))+
-  #Set font size for all texts
+  
+  #Font
   theme(text = element_text(size = 20)) +
+  #Labels
   xlab("Longitude") + ylab("Latitude") +
+  #Title
   ggtitle("Map of Indiana Watershed and Major Cities", 
           subtitle = paste0("(", length(unique(Somecities$NAME)), 
                             " cities selected)"))
