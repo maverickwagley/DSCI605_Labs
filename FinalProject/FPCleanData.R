@@ -1,3 +1,6 @@
+#FP Clean Data
+#
+
 #
 ########################Initialize Data#######################
 # Load Libraries
@@ -23,7 +26,7 @@ States = st_read("data/tl_2019_us_state/tl_2019_us_state.shp")
 #
 ########################Process Polygon Data#######################
 # Filter Regions Outside Contiguous USA
-Contiguous_state <- States%>% filter(STUSPS!="AK"& 
+Contiguous_state = States%>% filter(STUSPS!="AK"& 
                                        STUSPS!="AS"& 
                                        STUSPS!="MP"& 
                                        STUSPS!="PR"& 
@@ -60,7 +63,7 @@ Unemployrate = Unemployrate %>%
 length(unique(Unemployrate $State))
 
 # Process Unemployment 2
-Unemployrate <- Unemployrate %>% 
+Unemployrate = Unemployrate %>% 
   #Match the column name of the crime data set
   rename("STUSPS"="State") %>% 
   #Get selection of years
@@ -78,7 +81,7 @@ length(unique(Crimerate$jurisdiction))
 head(Crimerate)
 
 # Process Data
-Crimerate <-  Crimerate %>% 
+Crimerate =  Crimerate %>% 
   #Update Jurisdiction to STUSPS (Matches others)
   rename("STUSPS"="jurisdiction") %>% 
   #Update year to Year (Matches others)
@@ -93,10 +96,10 @@ length(unique(Crimerate$STUSPS))
 head(Crimerate)
 
 # Changes the state names in the state column "STUSPS"
-Crimerate$STUSPS <- state.abb[match(str_to_title(Crimerate$STUSPS),state.name)]
+Crimerate$STUSPS = state.abb[match(str_to_title(Crimerate$STUSPS),state.name)]
 
 # Calculate the crimerate
-Crimerate <- Crimerate %>% 
+Crimerate = Crimerate %>% 
   #Get Rate as a percent (value/total*100)
   mutate(Crimerate=(violent_crime_total/state_population)*100) %>% 
   dplyr::mutate_if(is.numeric, round, 1)
@@ -115,10 +118,10 @@ Crimerate <- Crimerate %>%
 CS_Erate<-right_join(Contiguous_state, Unemployrate, 
                      by = c("STUSPS"))
 # As CS_Erate_Crate, Join CS_Erate and Crime Tables (Merge to the Right)
-CS_Erate_Crate <- right_join(CS_Erate, Crimerate, 
+CS_Erate_Crate = right_join(CS_Erate, Crimerate, 
                              by = c("STUSPS","Year"))
 # With newly joined tables, select only the needed columns
-CS_Erate_Crate1 <- CS_Erate_Crate %>% 
+CS_Erate_Crate1 = CS_Erate_Crate %>% 
   select(REGION,STUSPS,NAME,Year,Meanrate,Crimerate) %>% 
   rename("Unemplyrate"="Meanrate")
 ########################The required columns#######################
