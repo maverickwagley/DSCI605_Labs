@@ -18,19 +18,29 @@ library(gridExtra)       #grid.arrange()
 setwd("~/FinalProject")
 newDS = readRDS("CS_Erate_CrateCombined1.Rds")
 newDF = as.data.frame(newDS)
-newDF
+#newDF
 ########################Initialize Data#######################
 #
 
 
 #
-########################Second Section#######################
-# SubSection A
+########################Scatter Plot#######################
+# Scatter Plot of 2014's Unemploy/Crime Rates
 sctr = newDF %>%
+  # Get Just 2014
+  filter(Year == "2014") %>%
+  # Set X and Y Values
   ggplot(aes(x=Crimerate,y=Unemplyrate)) +
-  geom_point(alpha=0.5,aes(color=REGION,fill=REGION))
+  # Add Data Points colored by Region
+  geom_point(alpha=0.5,aes(color=REGION)) +
+  #Set Title Text
+  ggtitle("Unemployment Rate and Crime Rate in 2014") +
+  #Set X and Y Label Text
+  xlab("Crime Rate per 100 People") +
+  ylab("Unemployment Rate per 100 People") +
+  #Hide Legend Title
+  theme(legend.title=element_blank())
+#Draw Plot
 sctr
-# SubSection B
-
-########################Second Section#######################
+########################Scatter Plot#######################
 #
