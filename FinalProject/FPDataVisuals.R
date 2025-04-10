@@ -1,6 +1,8 @@
 #FPDataVisuals
 #
 
+
+
 #
 ########################Initialize Data#######################
 # Load Libraries
@@ -23,6 +25,26 @@ newDF = as.data.frame(newDS)
 #
 
 
+
+#
+########################Spatial Map#######################
+# A spatial map of the contiguous US in 2014
+geoDF = newDF %>%
+  filter(Year == "2014")
+
+#Plot
+ggplot() +
+  #States Shape
+  geom_sf(data=geoDF$geometry,aes(fill=as.factor(floor(geoDF$Unemplyrate))))+
+  #Labels
+  xlab("Longitude") + ylab("Latitude") +
+  #Title
+  ggtitle("States SHape")
+########################Spatial Map#######################
+#
+
+
+
 #
 ########################Scatter Plot#######################
 # Scatter Plot of 2014's Unemploy/Crime Rates
@@ -37,7 +59,7 @@ sctr = newDF %>%
   ggtitle("Unemployment Rate and Crime Rate in 2014") +
   #Set X and Y Label Text
   xlab("Crime Rate per 100 People") +
-  ylab("Unemployment Rate per 100 People") +
+  ylab("Unemployment Rate per 100 People")+
   #Hide Legend Title
   theme(legend.title=element_blank())
 #Draw Plot
