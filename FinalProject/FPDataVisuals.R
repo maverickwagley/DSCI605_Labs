@@ -15,7 +15,7 @@ library(ggsn)            #scalebar()
 library(shiny)           #Shiny app
 library(plotly)          #plot_ly()
 library(gridExtra)       #grid.arrange()
-
+library(colorspace)
 # Setup Data
 setwd("~/FinalProject")
 newDS = readRDS("CS_Erate_CrateCombined1.Rds")
@@ -32,14 +32,19 @@ newDF = as.data.frame(newDS)
 geoDF = newDF %>%
   filter(Year == "2014")
 
+#Set Color Palette
+mapPal = colorspace::diverge_hcl(20, palette = "Blue-Red")
+
 #Plot
 ggplot() +
   #States Shape
   geom_sf(data=geoDF$geometry,aes(fill=as.factor(floor(geoDF$Unemplyrate))))+
+  #Scale Color With Palette
+  scale_fill_manual(values = mapPal)+
   #Labels
   xlab("Longitude") + ylab("Latitude") +
   #Title
-  ggtitle("States SHape")
+  ggtitle("Unemployment Rate Map over Contiguous US")
 ########################Spatial Map#######################
 #
 
