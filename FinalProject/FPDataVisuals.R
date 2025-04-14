@@ -27,6 +27,21 @@ newDF = as.data.frame(newDS)
 
 
 #
+########################Time Series Data#######################
+timeline = newDF %>%
+  filter(NAME=="Indiana" | NAME=="Illinois" | NAME=="Michigan"| NAME=="Ohio" )
+
+View(timeline)
+
+ggplot(timeline, aes(x=Year, y=Unemplyrate,color=NAME)) +
+  geom_point() + 
+  geom_line() 
+########################Time Series Data#######################
+#
+
+
+
+#
 ########################Spatial Map#######################
 # A spatial map of the contiguous US in 2014
 geoDF = newDF %>%
