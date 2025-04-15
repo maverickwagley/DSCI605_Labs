@@ -28,14 +28,30 @@ newDF = as.data.frame(newDS)
 
 #
 ########################Time Series Data#######################
+#Filter Data for Just the Desired States
 timeline = newDF %>%
-  filter(NAME=="Indiana" | NAME=="Illinois" | NAME=="Michigan"| NAME=="Ohio" )
+  filter(NAME=="Indiana" | NAME=="Illinois" | NAME=="Michigan"| NAME=="Ohio" ) %>%
+  #Add Day and Month Columns for Date Object Column
+  mutate(Day = 1) %>%
+  mutate(Month = 1) %>%
+  #Add Column for Date Object
+  mutate(Date=as.Date(format(as.Date(paste(Day, Month, Year, sep = '.'),"%d.%m.%Y"),"%Y-%m-%d")))
 
-View(timeline)
-
-ggplot(timeline, aes(x=Year, y=Unemplyrate,color=NAME)) +
+#Plot Stacked Line Graphs of Time Series
+ggplot(timeline, aes(x=Date, y=Unemplyrate,color=NAME)) +
+  #Plot Points
   geom_point() + 
-  geom_line() 
+  #Plot Lines Between Points
+  geom_line() +
+  #Update Date Labels
+  scale_x_date(date_labels = "%Y",date_breaks = "1 year")+
+  #Set Title Text
+  ggtitle("Unemployment Rate Changes along with Years") +
+  #Set X and Y Label Text
+  xlab("Year") +
+  ylab("Unemployment Rate")+
+  #Hide Legend Title
+  theme(legend.title=element_blank())
 ########################Time Series Data#######################
 #
 
