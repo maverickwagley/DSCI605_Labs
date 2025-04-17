@@ -1,10 +1,18 @@
-#FPDataVisuals
-#
+---
+title: "FP Graph Code"
+author: "MW"
+date: "2025-04-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 
+## Import Libraries
 
-#
-########################Initialize Data#######################
+```{r Import, echo=TRUE}
 # Load Libraries
 library(tidyverse)
 library(raster)          #raster()
@@ -15,19 +23,17 @@ library(ggsn)            #scalebar()
 library(shiny)           #Shiny app
 library(plotly)          #plot_ly()
 library(gridExtra)       #grid.arrange()
-library(colorspace)
+
 # Setup Data
 setwd("~/FinalProject")
 newDS = readRDS("CS_Erate_CrateCombined1.Rds")
 newDF = as.data.frame(newDS)
-#newDF
-########################Initialize Data#######################
-#
+```
 
 
+## Time Series Plots
 
-#
-########################Plotly Time Series#######################
+```{r TimeSeriesData, echo=TRUE}
 #Filter Data for Just the Desired States
 timeline = newDF %>%
   filter(NAME=="Indiana" | NAME=="Illinois" | NAME=="Michigan"| NAME=="Ohio" ) %>%
@@ -36,27 +42,35 @@ timeline = newDF %>%
   mutate(Month = 1) %>%
   #Add Column for Date Object
   mutate(Date=as.Date(format(as.Date(paste(Day, Month, Year, sep = '.'),"%d.%m.%Y"),"%Y-%m-%d")))
+```
 
-#Unemployment Plot
+```{r TimeSeriesPlotA, echo=TRUE}
+#Use the timeline data to plot Unemployment
 plot_ly(data=timeline,x=~Date,y=~Unemplyrate,type="scatter",mode="lines",color=~NAME) %>%
+  #Adjust Labels and Title
   layout(title="Unemployment Rate Over Time",xaxis=list(title="Year"),yaxis=list(title="Unemployment Rate"))
+```
 
-#Crime Plot
+```{r TimeSeriesPlotB, echo=TRUE}
+#Use the timeline data to plot Crime
 plot_ly(data=timeline,x=~Date,y=~Crimerate,type="scatter",mode="lines",color=~NAME) %>%
+  #Adjust Labels and Title
   layout(title="Crime Rate Over Time",xaxis=list(title="Year"),yaxis=list(title="Crime Rate"))
-########################Plotly Time Series#######################
-#
+```
 
 
-#
-########################GGPlot Spatial Map#######################
+## Geospatial Plots
+
+```{r Spatial, echo=TRUE}
 # A spatial map of the contiguous US in 2014
 geoDF = newDF %>%
   filter(Year == "2014")
 
 #Set Color Palette
 mapPal = colorspace::diverge_hcl(20, palette = "Blue-Red")
+```
 
+```{r SpatialPlotA, echo=TRUE}
 #Unemployment Plot
 ggplot() +
   #States Shape
@@ -79,8 +93,9 @@ ggplot() +
   xlab("Longitude") + ylab("Latitude") +
   #Title
   ggtitle("2014 Unemplyment Rate Map over Contiguous US")
+```
 
-
+```{r SpatialPlotB, echo=TRUE}
 #Crime Plot
 ggplot() +
   #States Shape
@@ -103,77 +118,15 @@ ggplot() +
   xlab("Longitude") + ylab("Latitude") +
   #Title
   ggtitle("2014 Crime Rate Map over Contiguous US")
-########################GGplot Spatial Map#######################
-#
+```
 
 
+## Scatter Plot
 
-#
-########################GGPlot Spatial Map#######################
-# A spatial map of the contiguous US in 2014
-geoDF = newDF %>%
-  filter(Year == "2014")
-
-#Set Color Palette
-mapPal = colorspace::diverge_hcl(20, palette = "Blue-Red")
-
-#Unemployment Plot
-ggplot() +
-  #States Shape
-  geom_sf(data=geoDF$geometry,aes(fill=as.factor(floor(geoDF$Unemplyrate))))+
-  #Scale Color With Palette
-  scale_fill_manual(values = mapPal)+
-  #Labels
-  xlab("Longitude") + ylab("Latitude") +
-  #Title
-  ggtitle("Unemployment Rate Map over Contiguous US")
-
-
-#Crime Plot
-ggplot() +
-  #States Shape
-  geom_sf(data=geoDF$geometry,aes(fill=as.factor(floor(geoDF$CrimeRate))))+
-  #Scale Color With Palette
-  scale_fill_manual(values = mapPal)+
-  #Labels
-  xlab("Longitude") + ylab("Latitude") +
-  #Title
-  ggtitle("Unemployment Rate Map over Contiguous US")
-########################GGplot Spatial Map#######################
-#
-
-
-
-#
-########################Plotly Crime and Unemployment Scatter#######################
+```{r Scatterplot}
 # Filter Data for Just 2014
 sctr = newDF %>% filter(Year == "2014") 
 #Plot Time 
 plot_ly(data=sctr,x=~Crimerate,y=~Unemplyrate,type="scatter",mode="markers",color=~REGION) %>%
   layout(title="2014 Crime and Unemployment by Region",xaxis=list(title="Crime Rate per 100 People"),yaxis=list(title="Unemployment Rate per 100 People"))
-########################Plotly Crime and Unemployment Scatter#######################
-#
-
-
-
-#
-########################Scatter Plot#######################
-# Scatter Plot of 2014's Unemploy/Crime Rates
-sctr = newDF %>%
-  # Get Just 2014
-  filter(Year == "2014") %>%
-  # Set X and Y Values
-  ggplot(aes(x=Crimerate,y=Unemplyrate)) +
-  # Add Data Points colored by Region
-  geom_point(alpha=0.5,aes(color=REGION)) +
-  #Set Title Text
-  ggtitle("Unemployment Rate and Crime Rate in 2014") +
-  #Set X and Y Label Text
-  xlab("Crime Rate per 100 People") +
-  ylab("Unemployment Rate per 100 People")+
-  #Hide Legend Title
-  theme(legend.title=element_blank())
-#Draw Plot
-sctr
-########################Scatter Plot#######################
-#
+```
