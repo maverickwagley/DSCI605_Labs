@@ -107,9 +107,9 @@ Crimerate = Crimerate %>%
 #
 
 
-# save(list = c("Crimerate", "Unemployrate","Contiguous_state"), file = "CleaneData.Rdata")
+save(list = c("Crimerate", "Unemployrate","Contiguous_state"), file = "CleaneData.Rdata")
 ##################Read data file into R
-# load(file = "CleaneData.Rdata")
+load(file = "CleaneData.Rdata")
 
 
 #
